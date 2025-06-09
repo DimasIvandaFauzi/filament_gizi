@@ -11,7 +11,6 @@ class CalculationController extends Controller
 {
     public function calculate(Request $request)
     {
-        // Validasi input
         $validator = Validator::make($request->all(), [
             'gender' => 'required|in:Laki-laki,Perempuan',
             'age' => 'required|integer|min:1|max:120',
@@ -113,7 +112,7 @@ class CalculationController extends Controller
     private function calculateMacronutrients($weight, $activity, $goal)
     {
         // Logika sederhana untuk menghitung kebutuhan makronutrien
-        $baseCalories = $weight * 24; // Contoh: 24 kcal per kg berat badan
+        $baseCalories = $weight * 24;
         $activityFactor = $activity === 'Rendah' ? 1.2 : ($activity === 'Sedang' ? 1.5 : 1.9);
         $goalFactor = $goal === 'Menurunkan Berat Badan' ? 0.8 : ($goal === 'Meningkatkan Berat Badan' ? 1.2 : 1.0);
         $totalCalories = $baseCalories * $activityFactor * $goalFactor;

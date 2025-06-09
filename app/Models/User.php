@@ -15,6 +15,7 @@ class User extends Authenticatable
         'email',
         'password',
         'is_admin',
+        'profile_photo', // Tambahkan kolom untuk foto profil
     ];
 
     protected $hidden = [

@@ -6,7 +6,6 @@ use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\FoodController;
 use App\Http\Controllers\API\ActivityController;
 use App\Http\Controllers\API\CalculationController;
-use App\Http\Controllers\API\CalculationHistoryController;
 use App\Http\Controllers\API\ScheduleController;
 use App\Http\Controllers\API\ProfileController;
 
@@ -17,6 +16,14 @@ Route::prefix('auth')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
+    // Profile routes
+    Route::prefix('profile')->group(function () {
+        Route::get('/me', [ProfileController::class, 'me'])->name('profile.me');
+        Route::post('/update-username', [ProfileController::class, 'updateUsername'])->name('profile.update-username');
+        Route::post('/update-password', [ProfileController::class, 'updatePassword'])->name('profile.update-password');
+        Route::post('/upload-photo', [ProfileController::class, 'uploadProfilePhoto'])->name('profile.upload-photo');
+    });
+    
     Route::get('/users/me', [ProfileController::class, 'me'])->name('profile.me');
     Route::post('/calculate', [CalculationController::class, 'calculate'])->name('calculate');
     Route::get('/history', [CalculationController::class, 'history'])->name('history');
@@ -26,7 +33,6 @@ Route::middleware('auth:sanctum')->group(function () {
     
     Route::apiResource('users', UserController::class)->middleware('admin');
     Route::apiResource('calculations', CalculationController::class);
-    Route::apiResource('calculation-histories', CalculationHistoryController::class);
     Route::apiResource('schedules', ScheduleController::class);
 
     // Admin-only routes
@@ -41,16 +47,6 @@ Route::middleware('auth:sanctum')->group(function () {
         });
     });
 });
-
-// Route untuk menangani gambar di /storage/
-Route::get('/storage/{path}', function ($path) {
-    $file = Storage::disk('public')->get($path);
-    if (!$file) {
-        abort(404);
-    }
-    $mimeType = Storage::disk('public')->mimeType($path);
-    return response($file, 200)->header('Content-Type', $mimeType);
-})->middleware('cors')->where('path', '.*');
 
 Route::get('/ping', function () {
     return response()->json(['message' => 'Server is running', 'status' => 'ok']);
